@@ -15,7 +15,7 @@ A custom, mutable Java implementation of a string builder built completely from 
 * **Testing:** JUnit framework (`myStrBuilderJunitTester`)
 * **Core Concepts:** Dynamic array management, manual memory/array copying (`System.arraycopy`), algorithmic digit parsing, and exception handling.
 
-## 🧪 Testing
+## Testing
 The project includes a comprehensive JUnit test suite (`myStrBuilderJunitTester.java`) covering constructors, boundary conditions, edge values (such as minimum/maximum integers), and all manipulation methods.
 
 To run tests locally:
