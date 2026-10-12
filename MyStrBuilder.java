@@ -1,0 +1,332 @@
+
+
+//Name: Victor Li
+//Class Period: 2nd
+//Section: Computer Science 2 K
+
+
+
+
+public class MyStrBuilder {
+ private char[] data;
+ private int size;
+ // Constructs a StringBuilder with no characters in it
+ // Has an initial capacity of 16
+ MyStrBuilder(){
+  data = new char[16];
+  size = 0;
+ }
+ //Constructs a StringBuilder with no characters
+ //Sets capacity to the parameter the user passes in
+ MyStrBuilder(int capacity){
+  data = new char[capacity];
+  size = 0;
+ }
+ //Creates a StringBuilder with the elements
+ // inside of chars[] array
+ //with 16 trailing elements
+ MyStrBuilder(char[] chars){
+  data= new char[chars.length+16];
+  size = chars.length;
+  System.arraycopy(chars, 0, data, 0, chars.length);
+ }
+
+ /** This helper function determines whether the length of
+  * the string buffer needs to be increased
+  * @param a - the number of elements that will be added to data[]
+  * It creates a temporary array and sets data equal to it at the end
+  */
+ private void checkIfNeedIncrease(int a){
+  while(size+a>data.length){
+  char[] temp = new char[(data.length*2)+2];
+  System.arraycopy(data, 0, temp, 0, data.length);
+  data = temp;
+  }
+ }
+ // This function appends a char to the string buffer
+ public void append(char c){
+  checkIfNeedIncrease(1);
+  data[size] = c;
+  size++;
+ }
+ /**This function appends an integer
+  * the count variable stores the number of digits
+  * the second if statement checks if the number is negative
+  * if so, it calls the append char method to add the '-' & size++
+  * Loop number twe counts the digits
+  * Loop two typecasts and inserts the value into the array
+  */
+ public void append(int n) {
+  if (n == Integer.MIN_VALUE) n++;
+  int count = 0;
+  if (n < 0) {
+  data[0] = '-';
+  n = -n;
+  size++;
+  count++;
+  }
+  int temp = n;
+  while (temp > 0) {
+  temp /= 10;
+  count++;
+  }
+  checkIfNeedIncrease(count);
+  int index = count - 1;
+  while (n > 0) {
+  data[index] = (char) ('0' + (n % 10));
+  n /= 10;
+  index--;
+  size++;
+  }
+
+ }
+
+ /**This appends an array of chars
+  * to data
+  * @param chars- the array that is
+  * being appended
+  */
+ public void append(char[] chars){
+  checkIfNeedIncrease(chars.length);
+  for (char aChar : chars) {
+  data[size] = aChar;
+  size++;
+  }
+ }
+
+ /**
+  * throws IndexOut OfBoundsException
+  * if index argument<0
+  * or >= length of stringbuffer
+  * @param i-the index of the char
+  * @return the char at the specified index
+  */
+ public char charAt(int i){
+  if(!(i<data.length&&i>=0)) throw new IndexOutOfBoundsException();
+  return data[i];
+ }
+ public int capacity(){
+  return data.length;
+ }
+ public int length(){
+  return size;
+ }
+ public char[] getData(){
+  return data;
+ }
+
+ /**
+  * creates a substring of string
+  * @param begin-start of sequence(inclusive)
+  * @param end-end of sequence(exclusive)
+  * @return a new string that
+  * encompasses the characters
+  * within this sequence
+  */
+ public MyStrBuilder substring(int begin, int end){
+  char[] temp = new char[end-begin+16];
+  if(begin<0||end>size) throw new IndexOutOfBoundsException();
+  MyStrBuilder a = new MyStrBuilder();
+  int tempIndex = 0;
+  for(int i = begin; i<end; i++){
+  temp[tempIndex] = data[i];
+  tempIndex++;
+  }
+  a.data = temp;
+  return a;
+ }
+
+ /** creates a substring
+  * of the string builder
+  * @param begin-where the substring starts
+  * @return the values starting from begin
+  */
+ public MyStrBuilder substring(int begin){
+  char[] temp = new char[data.length-begin+16];
+  if(begin<0) throw new IndexOutOfBoundsException();
+  MyStrBuilder y = new MyStrBuilder();
+  int tempIndex = 0;
+  for(int i = begin; i<data.length; i++){
+   temp[tempIndex] = data[i];
+   tempIndex++;
+  }
+  y.data = temp;
+  return y;
+ }
+ // Converts the entire string builder to lower case
+ public MyStrBuilder toLowerCase() {
+  MyStrBuilder y = new MyStrBuilder(size+16);
+  for (int i = 0; i < y.data.length-16; i++) {
+  int c = data[i];
+  if (c >= 65 && c <= 90) {
+   c+=32;
+  }
+  y.append((char)c);
+  }
+  return y;
+ }
+ //Converts entire string builder to upper case
+ public MyStrBuilder toUpperCase(){
+  MyStrBuilder y = new MyStrBuilder(size+16);
+  for (int i = 0; i < data.length-16; i++) {
+  int c = data[i];
+  if (c >= 97 && c <= 122) {
+   c-=32;
+  }
+  y.append((char)c);
+  }
+  return y;
+ }
+
+ /**Determines if both
+  * string builders are
+  * equal excluding
+  * null characters
+  * @param obj- the other string
+  * being compared
+  * @return whether they
+  * are the same
+  */
+  public boolean equals(Object obj){
+  MyStrBuilder other = (MyStrBuilder)obj;
+  for(int i = 0; i<data.length; i++){
+  if(other.data[i]!=data[i]) return false;
+  }
+  return true;
+  }
+
+ /**
+  *
+  * @param c-char being located
+  * @return index of a char
+  * or -1 if it doesn't exist
+  */
+ public int indexOf(char c){
+  for(int i = 0; i<data.length; i++){
+  if(data[i]==c) return i;
+  }
+  return -1;
+ }
+
+ /**Reverses the string builder
+  * ignores null characters
+  */
+ public void reverse(){
+  char[] temp = new char[data.length];
+  int changeableSize = size-1;
+  temp[0]=data[size];
+  for(int i = 0; i<size; i++){
+  temp[i]=data[changeableSize];
+  changeableSize--;
+  }
+  data=temp;
+ }
+
+ /**
+  * Inserts a char and shifts
+  * everything after it
+  * @param offset-where the char
+  * will be inserted
+  * @param c-the char
+  * being put in
+  * @throws IndexOutOfBoundsException if offset doesn't exist(or is null)
+  */
+ public void insert(int offset, char c){
+  if (offset < 0 || offset > size) {
+  throw new IndexOutOfBoundsException();
+  }
+  checkIfNeedIncrease(1);
+  char[] temp = new char[data.length];
+  System.arraycopy(data, 0, temp, 0, offset);
+  temp[offset] = c;
+  System.arraycopy(data, offset, temp, offset + 1, size - offset);
+  data = temp;
+  size++;
+ }
+
+ /** Inserts a char array and shifts
+  * everything after it further down
+  * @param offset-index that char
+  * will be placed in
+  * @param chars-char being put in
+  * @throws IndexOutOfBoundsException if offset doesn't exist
+  */
+ public void insert(int offset, char[] chars){
+  if (offset < 0 || offset > data.length) throw new IndexOutOfBoundsException();
+  checkIfNeedIncrease(chars.length);
+  System.arraycopy(data, offset, data, offset + chars.length, size - offset);
+  System.arraycopy(chars, 0, data, offset, chars.length);
+  size += chars.length;
+ }
+
+ /**Deletes the char
+  * at the specified index
+  * @param index- i of char
+  * @throws IndexOutOfBoundsException if index is null or doesn't exist
+  */
+ public void delete(int index){
+  char[] temp = new char[data.length];
+  if(index<0||index>size) throw new IndexOutOfBoundsException();
+  int alt = 0;
+  for(int i = 0;i<data.length; i++){
+  if(i==index){
+   continue;
+  }
+  temp[alt++] = data[i];
+
+  }
+  size--;
+  data=temp;
+ }
+
+ /**Deletes everything starting
+  * from start to ending
+  * stopping at index of end
+  * the capacity remains the same
+  * @param start-inclusive index
+  * @param end-exclusive index
+  * @throws IndexOutOfBoundsException if end is greater than start
+  * or either is invalid
+  */
+ public void delete(int start, int end){
+  if(start>end||end>size||start<0) throw new IndexOutOfBoundsException();
+  char[] temp = new char[data.length];
+  int i = 0;
+  for(; i<start; i++){
+  temp[i]=data[i];
+  }
+  for(int y = i=end; y<data.length; y++){
+  temp[i++] = data[y];
+  }
+  data=temp;
+  size-=(end-start);
+ }
+
+ /**Replaces everything starting from
+  * the index of start
+  * @param start-index replacement begins (inclusive)
+  * @param chars array being placed
+  * overwrites any previous chars
+  * @throws IndexOutOfBoundsException if start is invalid
+  */
+ public void replace(int start, char[] chars){
+  if(start<0||start>=chars.length) throw new IndexOutOfBoundsException();
+  checkIfNeedIncrease(chars.length);
+  int i = 0;
+  char[] temp = new char[data.length];
+  for(; i<start; i++){
+  temp[i]=data[i];
+  }
+  int j = 0;
+  for(; j<chars.length; j++){
+  temp[i++] = chars[j];
+  }
+
+  for(int y = i; y<data.length; y++){
+  temp[y] = data[++j];
+  }
+  data=temp;
+  size = size - (start+chars.length-start);
+  size+=chars.length;
+ }
+}
